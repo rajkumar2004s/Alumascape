@@ -1,0 +1,583 @@
+/**
+ * chat.css — AI Patio Consultant widget
+ * -----------------------------------------------------------------------
+ * Color tokens below are FALLBACKS only. If your project already exports
+ * a COLORS object (e.g. COLORS.ink, COLORS.ember — as seen in Navbar.jsx),
+ * override these variables once in your global stylesheet so the widget
+ * matches exactly:
+ *
+ *   :root {
+ *     --ac-ink: <COLORS.ink>;
+ *     --ac-ember: <COLORS.ember>;
+ *   }
+ * -----------------------------------------------------------------------
+ */
+
+:root {
+  --ac-ink: #16222c;          /* primary dark text / header bg */
+  --ac-ink-soft: #3c4c58;
+  --ac-ember: #d9601f;        /* brand accent — warm ember/aluminum-fire tone */
+  --ac-ember-dark: #b84e17;
+  --ac-cream: #faf8f4;        /* app background */
+  --ac-sand: #f0ebe2;         /* assistant bubble bg */
+  --ac-line: rgba(22, 34, 44, 0.09);
+  --ac-white: #ffffff;
+  --ac-radius-lg: 22px;
+  --ac-radius-md: 14px;
+  --ac-radius-sm: 10px;
+  --ac-shadow: 0 20px 60px -12px rgba(22, 34, 44, 0.28), 0 4px 16px rgba(22, 34, 44, 0.08);
+  --ac-shadow-btn: 0 10px 30px -8px rgba(217, 96, 31, 0.55);
+  --ac-font: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+}
+
+/* ============================= FLOATING BUTTON ============================= */
+
+.ac-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483000;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: linear-gradient(155deg, var(--ac-ember) 0%, var(--ac-ember-dark) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--ac-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--ac-shadow-btn);
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s ease;
+  font-family: var(--ac-font);
+}
+
+.ac-launcher:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 16px 40px -8px rgba(217, 96, 31, 0.65);
+}
+
+.ac-launcher:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.ac-launcher::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--ac-ember);
+  opacity: 0;
+}
+
+.ac-launcher.ac-pulse::before {
+  animation: ac-pulse-ring 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) 3;
+}
+
+@keyframes ac-pulse-ring {
+  0% { opacity: 0.55; transform: scale(0.85); }
+  70% { opacity: 0; transform: scale(1.35); }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+.ac-launcher-tooltip {
+  position: absolute;
+  right: 72px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--ac-ink);
+  color: var(--ac-white);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* ============================= CHAT WINDOW ============================= */
+
+.ac-window {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483000;
+  width: min(30vw, 450px);
+  min-width: 380px;
+  height: min(78vh, 700px);
+  background: var(--ac-cream);
+  border-radius: var(--ac-radius-lg);
+  border-top-right-radius: var(--ac-radius-lg);
+  border-bottom-right-radius: var(--ac-radius-lg);
+  box-shadow: var(--ac-shadow);
+  display: flex;
+  overflow: hidden;
+  font-family: var(--ac-font);
+  border: 1px solid var(--ac-line);
+}
+
+@media (max-width: 480px) {
+  .ac-window {
+    width: 100vw;
+    min-width: 0;
+    height: 100dvh;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+  }
+  .ac-launcher {
+    bottom: 18px;
+    right: 18px;
+  }
+}
+
+.ac-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ============================= SIDEBAR ============================= */
+
+.ac-sidebar {
+  width: 148px;
+  flex-shrink: 0;
+  background: var(--ac-white);
+  border-right: 1px solid var(--ac-line);
+  display: flex;
+  flex-direction: column;
+}
+
+.ac-sidebar-header {
+  padding: 14px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ac-sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ac-ink);
+  background: var(--ac-sand);
+  border: none;
+  border-radius: var(--ac-radius-sm);
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ac-sidebar-btn:hover {
+  background: #e8e0d2;
+}
+
+.ac-conversation-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ac-conversation-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 8px 8px;
+  border-radius: var(--ac-radius-sm);
+  font-size: 12px;
+  color: var(--ac-ink-soft);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+}
+
+.ac-conversation-item:hover {
+  background: var(--ac-sand);
+}
+
+.ac-conversation-item.ac-active {
+  background: var(--ac-sand);
+  color: var(--ac-ink);
+  font-weight: 600;
+}
+
+.ac-conversation-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ac-conversation-delete {
+  opacity: 0;
+  border: none;
+  background: none;
+  color: var(--ac-ink-soft);
+  cursor: pointer;
+  display: flex;
+  padding: 2px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.ac-conversation-item:hover .ac-conversation-delete {
+  opacity: 1;
+}
+
+.ac-conversation-delete:hover {
+  color: var(--ac-ember-dark);
+  background: rgba(217, 96, 31, 0.12);
+}
+
+/* ============================= HEADER ============================= */
+
+.ac-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--ac-ink);
+  color: var(--ac-white);
+  flex-shrink: 0;
+}
+
+.ac-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ac-header-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(155deg, var(--ac-ember), var(--ac-ember-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ac-white);
+  flex-shrink: 0;
+}
+
+.ac-header-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ac-header-subtitle {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.62);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.ac-online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3ecf72;
+  box-shadow: 0 0 0 2px rgba(62, 207, 114, 0.25);
+  flex-shrink: 0;
+}
+
+.ac-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ac-icon-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.ac-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ============================= MESSAGES ============================= */
+
+.ac-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-behavior: smooth;
+}
+
+.ac-messages::-webkit-scrollbar {
+  width: 6px;
+}
+.ac-messages::-webkit-scrollbar-thumb {
+  background: var(--ac-line);
+  border-radius: 999px;
+}
+
+.ac-msg-row {
+  display: flex;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.ac-msg-row.ac-user {
+  justify-content: flex-end;
+}
+
+.ac-bubble {
+  padding: 10px 13px;
+  border-radius: var(--ac-radius-md);
+  font-size: 13.8px;
+  line-height: 1.5;
+  max-width: 82%;
+  word-wrap: break-word;
+}
+
+.ac-bubble.ac-assistant {
+  background: var(--ac-white);
+  color: var(--ac-ink);
+  border: 1px solid var(--ac-line);
+  border-top-left-radius: 4px;
+}
+
+.ac-bubble.ac-user {
+  background: var(--ac-ink);
+  color: var(--ac-white);
+  border-top-right-radius: 4px;
+}
+
+.ac-bubble.ac-error {
+  background: #fdf1ec;
+  border: 1px solid rgba(217, 96, 31, 0.35);
+  color: var(--ac-ember-dark);
+}
+
+.ac-bubble p {
+  margin: 0 0 8px;
+}
+.ac-bubble p:last-child {
+  margin-bottom: 0;
+}
+.ac-bubble ul,
+.ac-bubble ol {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+.ac-bubble li {
+  margin-bottom: 3px;
+}
+.ac-bubble strong {
+  font-weight: 700;
+}
+.ac-bubble a {
+  color: var(--ac-ember-dark);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ac-bubble.ac-user a {
+  color: #ffd7bd;
+}
+
+.ac-msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 10.5px;
+  color: var(--ac-ink-soft);
+  opacity: 0.7;
+}
+
+.ac-msg-row.ac-user .ac-msg-meta {
+  justify-content: flex-end;
+}
+
+.ac-msg-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.ac-msg-action-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--ac-ink-soft);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 5px;
+}
+
+.ac-msg-action-btn:hover {
+  color: var(--ac-ink);
+  background: var(--ac-sand);
+}
+
+/* Typing indicator */
+.ac-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 2px;
+}
+
+.ac-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ac-ink-soft);
+  opacity: 0.5;
+  animation: ac-typing-bounce 1.1s infinite ease-in-out;
+}
+
+.ac-typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.ac-typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes ac-typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ============================= WELCOME / SUGGESTIONS ============================= */
+
+.ac-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0 16px 14px;
+  flex-shrink: 0;
+}
+
+.ac-chip {
+  border: 1px solid var(--ac-line);
+  background: var(--ac-white);
+  color: var(--ac-ink);
+  font-size: 12.3px;
+  font-weight: 500;
+  padding: 7px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.ac-chip:hover {
+  background: var(--ac-ink);
+  color: var(--ac-white);
+  border-color: var(--ac-ink);
+  transform: translateY(-1px);
+}
+
+/* ============================= INPUT ============================= */
+
+.ac-input-bar {
+  flex-shrink: 0;
+  border-top: 1px solid var(--ac-line);
+  background: var(--ac-cream);
+  padding: 10px 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.ac-textarea {
+  flex: 1;
+  resize: none;
+  border: 1px solid var(--ac-line);
+  background: var(--ac-white);
+  border-radius: var(--ac-radius-md);
+  padding: 10px 12px;
+  font-size: 13.8px;
+  font-family: var(--ac-font);
+  color: var(--ac-ink);
+  max-height: 110px;
+  line-height: 1.4;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ac-textarea:focus {
+  border-color: var(--ac-ember);
+  box-shadow: 0 0 0 3px rgba(217, 96, 31, 0.15);
+}
+
+.ac-textarea:disabled {
+  opacity: 0.6;
+}
+
+.ac-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--ac-radius-md);
+  border: none;
+  background: var(--ac-ember);
+  color: var(--ac-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ac-send-btn:hover:not(:disabled) {
+  background: var(--ac-ember-dark);
+}
+
+.ac-send-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.ac-send-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Focus visibility for keyboard users */
+.ac-launcher:focus-visible,
+.ac-icon-btn:focus-visible,
+.ac-chip:focus-visible,
+.ac-send-btn:focus-visible,
+.ac-sidebar-btn:focus-visible,
+.ac-conversation-item:focus-visible {
+  outline: 2px solid var(--ac-ember);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ac-launcher,
+  .ac-launcher::before,
+  .ac-typing-dot,
+  .ac-send-btn,
+  .ac-chip {
+    animation: none !important;
+    transition: none !important;
+  }
+}
