@@ -96,7 +96,7 @@ export default function PatioShowcase() {
       `}</style>
 
       {/* Gallery */}
-      <section style={{ backgroundColor: COLORS.paper }}>
+      <section style={{ backgroundColor: COLORS.paper }} id="project-ideas">
         <div className="mx-auto max-w-7xl px-6 py-24 sm:px-10 sm:py-28 lg:px-16">
           <Reveal className="mx-auto max-w-xl text-center">
             <Eyebrow center>Project Gallery</Eyebrow>
