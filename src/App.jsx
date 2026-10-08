@@ -15,7 +15,7 @@ import AreasWeServed from "./components/Areasweserved";
 import AreaDetails from "./pages/AreaDetails";
 import AIConsultant from "./components/AIConsultant";
 function App() {
-  return (
+  return ( 
     <BrowserRouter>
       <ScrollToTop />
       <Navbar />
